@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false" scan="true" scanPeriod="30 seconds">
+    <contextName>gyjg</contextName>
+    <!--  SpringBoot先于LogBack加载，指定logging path后生效, 不会产生LOG_PATH_IS_UNDEFINED -->
+    <springProperty name="LOG_PATH" source="logging.path" defaultValue="./log"/>
+    <conversionRule conversionWord="clr"
+                    converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+    <conversionRule conversionWord="wex"
+                    converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+    <conversionRule conversionWord="wEx"
+                    converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+    <property name="logFilePrefix" value="${LOG_PATH}/gyjg/"/>
+    <property name="consoleLogPattern"
+              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%-5level) [%t] %clr(%-40.40logger{39}){cyan}%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+    <property name="fileLogPattern"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%t] %-40.40logger{39}: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${consoleLogPattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <appender name="info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${fileLogPattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${logFilePrefix}/info/%d{yyyy-MM-dd}--%i.log</FileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${fileLogPattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${logFilePrefix}/warn/%d{yyyy-MM-dd}--%i.log</FileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${fileLogPattern}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${logFilePrefix}/error/%d{yyyy-MM-dd}--%i.log</FileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <MaxHistory>30</MaxHistory>
+        </rollingPolicy>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <logger name="org.apache.catalina.startup.DigesterFactory" level="error"/>
+    <logger name="org.apache.catalina.util.LifecycleBase" level="error"/>
+    <logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn"/>
+    <logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn"/>
+    <logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error"/>
+    <logger name="org.hibernate.validator.internal.util.Version" level="warn"/>
+    <logger name="org.springframework.boot.actuate.autoconfigure.CrshAutoConfiguration" level="warn"/>
+    <logger name="org.apache.tomcat.util" level="INFO"/>
+    <logger name="org.springframework.boot.actuate.endpoint.mvc.EndpointHandlerMapping" level="debug"/>
+    <logger name="org.apache.tomcat.util.scan.StandardJarScanner" level="error"/>
+    <logger name="org.apache.coyote.http11.Http11Processor" level="error"/>
+    <logger name="org.springframework.web" level="info"/>
+    <logger name="org.apache.kafka" level="warn"/>
+    <logger name="org.springframework.kafka" level="warn"/>
+
+    <springProfile name="dev">
+        <root level="INFO">
+            <appender-ref ref="console"/>
+            <appender-ref ref="info"/>
+            <appender-ref ref="warn"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root level="INFO">
+            <appender-ref ref="info"/>
+            <appender-ref ref="warn"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+</configuration>

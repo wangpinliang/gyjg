@@ -1,0 +1,16 @@
+server:
+  port: 18080
+
+# 推送通知相关配置
+notification:
+  url: http://52.5.125.153/VIID/SubscribeNotifications
+
+logging:
+  path: ./log
+
+kafka:
+  servers:
+    - 193.5.111.47:6667
+    - 193.5.111.48:6667
+    - 193.5.111.25:6667
+  groupId: motor-vehicle-gyjg
